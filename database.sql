@@ -1,8 +1,5 @@
 -- Hotel Luxury Resort & Rooms Database Schema
--- Database Name: hotel_db
-
-CREATE DATABASE IF NOT EXISTS `hotel_db` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-USE `hotel_db`;
+-- Compatible with local XAMPP and InfinityFree Hosting
 
 -- 1. Users Table (Registration with Email OTP verification)
 CREATE TABLE IF NOT EXISTS `users` (
