@@ -5,13 +5,22 @@
  * All database and email settings live in this single file.
  */
 
-// ============================================================================
-// 1. ENVIRONMENT CONFIGURATION (Like MERN .env)
-// ============================================================================
-$db_host = "localhost";
-$db_user = "root";
-$db_pass = "";             // Default XAMPP MySQL password is blank
-$db_name = "hotel_db";
+// Environment Auto-Switcher (Localhost XAMPP vs InfinityFree Live Server)
+$is_local = in_array($_SERVER['HTTP_HOST'] ?? '', ['localhost', '127.0.0.1']) || strpos($_SERVER['HTTP_HOST'] ?? '', 'localhost:') !== false;
+
+if ($is_local) {
+    // 1. LOCAL XAMPP ENVIRONMENT
+    $db_host = "localhost";
+    $db_user = "root";
+    $db_pass = "";
+    $db_name = "hotel_db";
+} else {
+    // 2. INFINITYFREE LIVE PRODUCTION ENVIRONMENT
+    $db_host = "sql308.infinityfree.com";
+    $db_user = "if0_43133421";
+    $db_pass = "J6Gw7Hm2Edu";
+    $db_name = "if0_43133421_hotel_db";
+}
 
 // Gmail SMTP & OTP Settings
 $mail_host      = "smtp.gmail.com";
