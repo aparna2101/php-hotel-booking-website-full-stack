@@ -88,11 +88,23 @@ $active_revenue    = (float)$pdo->query("SELECT COALESCE(SUM(total_amount), 0) F
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
   <link rel="stylesheet" href="../assets/css/style.css">
   <style>
-    body { margin: 0; }
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      max-width: 100%;
+      overflow-x: hidden;
+      background: #F8FAFC;
+    }
     .admin-layout {
       display: grid;
-      grid-template-columns: 260px 1fr;
+      grid-template-columns: 260px minmax(0, 1fr);
       min-height: 100vh;
+      width: 100%;
+      max-width: 100%;
     }
     .admin-sidebar {
       background: var(--color-primary-dark);
@@ -120,20 +132,50 @@ $active_revenue    = (float)$pdo->query("SELECT COALESCE(SUM(total_amount), 0) F
     .admin-main {
       padding: 30px 36px;
       background: #F8FAFC;
+      width: 100%;
+      max-width: 100%;
+      min-width: 0;
+      overflow-x: hidden;
+      box-sizing: border-box;
+    }
+    .admin-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+      width: 100%;
+      box-sizing: border-box;
     }
     .stat-pill {
       background: #FFFFFF;
       border: 1px solid #E2E8F0;
       border-radius: var(--radius-md);
-      padding: 16px 18px;
+      padding: 18px 20px;
       box-shadow: 0 1px 3px rgba(0,0,0,0.05);
       display: flex;
       align-items: center;
       justify-content: space-between;
+      min-width: 0;
+      box-sizing: border-box;
+    }
+    .table-scroll-wrap {
+      width: 100%;
+      max-width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      display: block;
+      box-sizing: border-box;
+    }
+    .table-scroll-wrap::-webkit-scrollbar {
+      height: 6px;
+    }
+    .table-scroll-wrap::-webkit-scrollbar-thumb {
+      background: var(--color-gold);
+      border-radius: 3px;
     }
     .admin-table {
       width: 100%;
-      min-width: 820px;
+      min-width: 780px;
       border-collapse: collapse;
       text-align: left;
       font-size: 0.86rem;
@@ -147,6 +189,7 @@ $active_revenue    = (float)$pdo->query("SELECT COALESCE(SUM(total_amount), 0) F
       font-size: 0.78rem;
       text-transform: uppercase;
       letter-spacing: 0.8px;
+      white-space: nowrap;
     }
     .admin-table td {
       padding: 14px;
@@ -185,15 +228,150 @@ $active_revenue    = (float)$pdo->query("SELECT COALESCE(SUM(total_amount), 0) F
       gap: 5px;
       justify-content: flex-end;
     }
+    @media (max-width: 1200px) {
+      .admin-stats-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+    @media (max-width: 900px) {
+      .admin-layout {
+        display: block !important;
+        width: 100% !important;
+        max-width: 100% !important;
+      }
+      .admin-mobile-topbar {
+        display: flex !important;
+        justify-content: space-between;
+        align-items: center;
+        background: var(--color-primary-dark);
+        padding: 12px 16px;
+        border-bottom: 1px solid var(--color-border-gold);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        width: 100% !important;
+        box-sizing: border-box;
+      }
+      .admin-sidebar {
+        display: none;
+        position: fixed;
+        top: 57px;
+        left: 0;
+        width: 260px;
+        height: calc(100vh - 57px);
+        z-index: 99;
+        box-shadow: 5px 0 25px rgba(0,0,0,0.5);
+        overflow-y: auto;
+      }
+      .admin-sidebar.sidebar-open {
+        display: block !important;
+      }
+      .admin-main {
+        padding: 18px 12px !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+        overflow-x: hidden !important;
+      }
+      .admin-stats-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 10px !important;
+        margin-bottom: 18px !important;
+      }
+      .stat-pill {
+        padding: 12px 14px !important;
+      }
+      .stat-pill:last-child {
+        grid-column: span 2;
+      }
+    }
+    @media (max-width: 480px) {
+      .admin-main h1 {
+        font-size: 1.4rem !important;
+      }
+      .admin-stats-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 8px !important;
+      }
+      .stat-pill {
+        padding: 10px 10px !important;
+      }
+      .stat-pill h3 {
+        font-size: 1.3rem !important;
+      }
+    }
+    @media (max-width: 380px) {
+      .admin-stats-grid {
+        grid-template-columns: 1fr !important;
+      }
+      .stat-pill:last-child {
+        grid-column: span 1 !important;
+      }
+    }
   </style>
 </head>
 <body>
 
+  <!-- Mobile Top Bar (< 900px) -->
+  <div class="admin-mobile-topbar" style="display: none;">
+    <div style="display: flex; align-items: center; gap: 10px;">
+      <img src="../assets/images/logo.png" alt="Logo" style="width: 34px; height: 34px; border-radius: 50%; border: 1.5px solid var(--color-gold); object-fit: cover;">
+      <span style="font-family: var(--font-serif); font-size: 1.05rem; color: #FFF; letter-spacing: 1.5px;">HOTEL ADMIN</span>
+    </div>
+    <div style="display: flex; gap: 8px; align-items: center;">
+      <a href="../index.php" target="_blank" style="color: #38BDF8; font-size: 0.82rem; padding: 6px 10px; background: rgba(255,255,255,0.08); border-radius: 4px; text-decoration: none;">
+        <i class="fa-solid fa-globe"></i>
+      </a>
+      <button type="button" onclick="document.getElementById('adminBookingsSidebar').classList.toggle('sidebar-open')" style="background: rgba(197, 155, 39, 0.2); border: 1px solid var(--color-gold); color: var(--color-gold-light); padding: 6px 12px; border-radius: 4px; font-size: 0.88rem; cursor: pointer; display: flex; align-items: center; gap: 6px;">
+        <i class="fa-solid fa-bars"></i> Menu
+      </button>
+    </div>
+  </div>
+
   <div class="admin-layout">
-    <?php
-      $admin_active_page = 'bookings';
-      require_once 'nav.php';
-    ?>
+    <!-- Sidebar -->
+    <aside class="admin-sidebar" id="adminBookingsSidebar">
+      <div class="brand-logo" style="margin-bottom: 40px; display: flex; align-items: center; gap: 12px;">
+        <img src="../assets/images/logo.png" alt="Logo" style="width: 42px; height: 42px; border-radius: 50%; border: 2px solid var(--color-gold); object-fit: cover;">
+        <div>
+          <span class="brand-name" style="font-size: 1.15rem; letter-spacing: 2px; color: #FFF; font-family: var(--font-serif);">HOTEL</span>
+          <span class="brand-tagline" style="display: block; font-size: 0.65rem; color: var(--color-gold); letter-spacing: 2px;">ADMIN SUITE</span>
+        </div>
+      </div>
+
+      <ul class="admin-nav">
+        <li>
+          <a href="dashboard.php">
+            <i class="fa-solid fa-chart-line"></i> Dashboard Overview
+          </a>
+        </li>
+        <li>
+          <a href="bookings.php" class="active">
+            <i class="fa-solid fa-calendar-check text-gold"></i> All Bookings & Check-ins
+          </a>
+        </li>
+        <li>
+          <a href="rooms.php">
+            <i class="fa-solid fa-bed"></i> Room Inventory
+          </a>
+        </li>
+        <li>
+          <a href="profile.php">
+            <i class="fa-solid fa-user-shield"></i> Admin Security
+          </a>
+        </li>
+        <li style="margin-top: 30px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px;">
+          <a href="../index.php" target="_blank" style="color: #38BDF8;">
+            <i class="fa-solid fa-arrow-up-right-from-square"></i> View Guest Website
+          </a>
+        </li>
+        <li>
+          <a href="logout.php" style="color: #F87171;">
+            <i class="fa-solid fa-right-from-bracket"></i> Sign Out
+          </a>
+        </li>
+      </ul>
+    </aside>
 
     <!-- Main Content -->
     <main class="admin-main">
@@ -315,21 +493,17 @@ $active_revenue    = (float)$pdo->query("SELECT COALESCE(SUM(total_amount), 0) F
       </div>
 
       <!-- Bookings Table Card -->
-      <div class="card" style="overflow: hidden; background: #FFFFFF; border-radius: var(--radius-md); border: 1px solid #E2E8F0;">
-        <div style="padding: 16px 22px; border-bottom: 1px solid #E2E8F0; display: flex; justify-content: space-between; align-items: center;">
+      <div class="card" style="overflow: hidden; background: #FFFFFF; border-radius: var(--radius-md); border: 1px solid #E2E8F0; width: 100%; max-width: 100%; box-sizing: border-box;">
+        <div style="padding: 16px 20px; border-bottom: 1px solid #E2E8F0; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
           <h3 style="font-family: var(--font-serif); font-size: 1.15rem; color: var(--color-primary); margin: 0;">
             Bookings Roster <span style="color: var(--color-gold); font-size: 0.95rem;">(<?php echo count($bookings); ?> Found)</span>
           </h3>
-          <span style="font-size: 0.78rem; color: var(--color-text-muted);">
-            Real-time Database Sync &bull; Click Invoice icon to print slip
+          <span style="font-size: 0.75rem; color: var(--color-text-muted); background: #F1F5F9; padding: 4px 8px; border-radius: 4px; display: inline-flex; align-items: center; gap: 5px;">
+            <i class="fa-solid fa-arrows-left-right text-gold"></i> Scroll horizontally for details
           </span>
         </div>
 
-        <div class="table-swipe-hint">
-          <i class="fa-solid fa-arrows-left-right"></i> Swipe table horizontally to view full guest ID, room info & front desk actions
-        </div>
-
-        <div class="admin-table-responsive">
+        <div class="table-scroll-wrap">
           <table class="admin-table">
             <thead>
               <tr>

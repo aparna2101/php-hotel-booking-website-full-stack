@@ -82,21 +82,183 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <link rel="stylesheet" href="../assets/css/style.css">
 <style>
-body{margin:0;}
-.card{background:#FFF;border:1px solid #E2E8F0;border-radius:var(--radius-md);box-shadow:var(--shadow-sm);padding:24px 26px;margin-bottom:20px;}
-.fl label{display:block;font-size:0.81rem;font-weight:600;color:var(--color-primary);margin-bottom:5px;}
-.fl input{width:100%;padding:9px 12px;border:1.5px solid #CBD5E1;border-radius:var(--radius-xs);font-size:0.87rem;font-family:inherit;color:var(--color-primary);transition:border-color 0.2s;box-sizing:border-box;}
-.fl input:focus{outline:none;border-color:var(--color-gold);}
-.fg2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}
-@media(max-width:768px){.fg2{grid-template-columns:1fr !important;gap:12px;}.card{padding:18px 14px !important;}}
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+  background: #F8FAFC;
+}
+.admin-layout {
+  display: grid;
+  grid-template-columns: 240px minmax(0, 1fr);
+  min-height: 100vh;
+  width: 100%;
+  max-width: 100%;
+}
+.admin-sidebar {
+  background: var(--color-primary-dark);
+  color: #FFF;
+  padding: 24px 16px;
+  border-right: 1px solid var(--color-border-gold);
+}
+.admin-nav { list-style: none; padding: 0; margin: 0; }
+.admin-nav li { margin-bottom: 4px; }
+.admin-nav a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  color: #94A3B8;
+  font-weight: 500;
+  font-size: 0.87rem;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+.admin-nav a.active, .admin-nav a:hover {
+  background: rgba(197, 155, 39, 0.15);
+  color: var(--color-gold-light);
+}
+.admin-main {
+  padding: 28px 36px;
+  background: #F8FAFC;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  overflow-x: hidden;
+  box-sizing: border-box;
+}
+.card {
+  background: #FFF;
+  border: 1px solid #E2E8F0;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  padding: 26px 30px;
+  margin-bottom: 22px;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+.fg2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+.fl label {
+  display: block;
+  font-size: 0.81rem;
+  font-weight: 600;
+  color: var(--color-primary);
+  margin-bottom: 5px;
+}
+.fl input {
+  width: 100%;
+  padding: 9px 12px;
+  border: 1.5px solid #CBD5E1;
+  border-radius: var(--radius-xs);
+  font-size: 0.87rem;
+  font-family: inherit;
+  color: var(--color-primary);
+  transition: border-color 0.2s;
+  box-sizing: border-box;
+}
+.fl input:focus {
+  outline: none;
+  border-color: var(--color-gold);
+}
+@media(max-width: 900px) {
+  .admin-layout {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+  .admin-mobile-topbar {
+    display: flex !important;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--color-primary-dark);
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--color-border-gold);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    width: 100% !important;
+    box-sizing: border-box;
+  }
+  .admin-sidebar {
+    display: none;
+    position: fixed;
+    top: 57px;
+    left: 0;
+    width: 260px;
+    height: calc(100vh - 57px);
+    z-index: 99;
+    box-shadow: 5px 0 25px rgba(0,0,0,0.5);
+    overflow-y: auto;
+  }
+  .admin-sidebar.sidebar-open {
+    display: block !important;
+  }
+  .admin-main {
+    padding: 18px 12px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    overflow-x: hidden !important;
+  }
+  .card {
+    padding: 18px 14px !important;
+  }
+  .fg2 {
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+  }
+}
+@media(max-width: 480px) {
+  .admin-main h1 {
+    font-size: 1.35rem !important;
+  }
+}
 </style>
 </head>
 <body>
+
+<!-- Mobile Top Bar (< 900px) -->
+<div class="admin-mobile-topbar" style="display:none;">
+  <div style="display:flex;align-items:center;gap:10px;">
+    <img src="../assets/images/logo.png" alt="Logo" style="width:34px;height:34px;border-radius:50%;border:1.5px solid var(--color-gold);object-fit:cover;">
+    <span style="font-family:var(--font-serif);font-size:1.05rem;color:#FFF;letter-spacing:1.5px;">HOTEL ADMIN</span>
+  </div>
+  <div style="display:flex;gap:8px;align-items:center;">
+    <a href="../index.php" target="_blank" style="color:#38BDF8;font-size:0.82rem;padding:6px 10px;background:rgba(255,255,255,0.08);border-radius:4px;text-decoration:none;">
+      <i class="fa-solid fa-globe"></i>
+    </a>
+    <button type="button" onclick="document.getElementById('adminProfileSidebar').classList.toggle('sidebar-open')" style="background:rgba(197,155,39,0.2);border:1px solid var(--color-gold);color:var(--color-gold-light);padding:6px 12px;border-radius:4px;font-size:0.88rem;cursor:pointer;display:flex;align-items:center;gap:6px;">
+      <i class="fa-solid fa-bars"></i> Menu
+    </button>
+  </div>
+</div>
+
 <div class="admin-layout">
-<?php
-  $admin_active_page = 'profile';
-  require_once 'nav.php';
-?>
+<aside class="admin-sidebar" id="adminProfileSidebar">
+  <div class="brand-logo" style="margin-bottom:30px;">
+    <img src="../assets/images/logo.png" alt="Logo" style="width:36px;height:36px;border-radius:50%;border:2px solid var(--color-gold);object-fit:cover;">
+    <div><span class="brand-name" style="font-size:0.95rem;letter-spacing:2px;">HOTEL</span><span class="brand-sub" style="font-size:0.48rem;letter-spacing:2px;display:block;">Admin</span></div>
+  </div>
+  <ul class="admin-nav">
+    <li><a href="dashboard.php"><i class="fa-solid fa-chart-pie"></i> Dashboard</a></li>
+    <li><a href="bookings.php"><i class="fa-solid fa-receipt"></i> All Bookings</a></li>
+    <li><a href="rooms.php"><i class="fa-solid fa-bed"></i> Manage Rooms</a></li>
+    <li><a href="profile.php" class="active"><i class="fa-solid fa-user-shield"></i> My Profile</a></li>
+    <li><a href="../index.php" target="_blank"><i class="fa-solid fa-globe"></i> View Website</a></li>
+    <li style="margin-top:28px;"><a href="logout.php" style="color:#EF4444;"><i class="fa-solid fa-power-off"></i> Logout</a></li>
+  </ul>
+</aside>
 
 <main class="admin-main">
   <div style="margin-bottom:20px;">

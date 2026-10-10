@@ -18,23 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt->execute([$login_input, $login_input]);
             $admin = $stmt->fetch();
 
-            $is_authenticated = false;
-            if ($admin) {
-                if (password_verify($password, $admin['password'])) {
-                    $is_authenticated = true;
-                } elseif (($password === 'admin123' || $password === 'password') && password_verify('password', $admin['password'])) {
-                    // Seamless auto-upgrade to admin123 hash
-                    $is_authenticated = true;
-                    try {
-                        $upgraded_hash = password_hash($password, PASSWORD_BCRYPT);
-                        $pdo->prepare("UPDATE `admins` SET `password` = ? WHERE `id` = ?")->execute([$upgraded_hash, $admin['id']]);
-                    } catch (Exception $e) {}
-                } elseif ($password === $admin['password']) {
-                    $is_authenticated = true;
-                }
-            }
-
-            if ($is_authenticated) {
+            if ($admin && password_verify($password, $admin['password'])) {
                 $_SESSION['admin_logged_in'] = true;
                 $_SESSION['admin_id']        = $admin['id'];
                 $_SESSION['admin_name']      = $admin['name'];
@@ -61,31 +45,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
-  <style>
-    .admin-login-card {
-      width: 100%;
-      max-width: 440px;
-      background: #FFFFFF;
-      border-radius: var(--radius-lg);
-      padding: 40px 32px;
-      box-shadow: 0 25px 60px rgba(0,0,0,0.5);
-      border: 1px solid var(--color-border-gold);
-      text-align: center;
-      box-sizing: border-box;
-    }
-    @media (max-width: 480px) {
-      .admin-login-card {
-        padding: 28px 18px !important;
-      }
-    }
-  </style>
+  <link rel="stylesheet" href="../assets/css/style.css">
 </head>
-<body style="min-height: 100vh; display: flex; align-items: center; justify-content: center; background: var(--color-navy-gradient); padding: 16px; margin: 0; box-sizing: border-box;">
+<body style="min-height: 100vh; display: flex; align-items: center; justify-content: center; background: var(--color-navy-gradient); padding: 20px;">
 
-  <div class="admin-login-card">
+  <div style="width: 100%; max-width: 440px; background: #FFFFFF; border-radius: var(--radius-lg); padding: 40px 32px; box-shadow: 0 25px 60px rgba(0,0,0,0.5); border: 1px solid var(--color-border-gold); text-align: center;">
     
     <div style="display: flex; justify-content: center; margin-bottom: 16px;">
-      <img src="../assets/images/logo.png" alt="Logo" style="width: 58px; height: 58px; border-radius: 50%; border: 2px solid var(--color-gold); object-fit: cover;">
+      <img src="../assets/images/logo.png" alt="Logo" style="width: 64px; height: 64px; border-radius: 50%; border: 2px solid var(--color-gold); object-fit: cover;">
     </div>
     
     <h2 style="font-family: var(--font-serif); color: var(--color-primary); font-size: 1.6rem; margin-bottom: 4px;">Staff & Admin Login</h2>

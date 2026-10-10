@@ -82,6 +82,31 @@ $current_page = "register";
 include 'includes/header.php';
 ?>
 
+<style>
+.auth-grid-2col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+@media (max-width: 640px) {
+  .auth-grid-2col {
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+    margin-bottom: 12px !important;
+  }
+}
+@media (max-width: 480px) {
+  .auth-page-wrapper {
+    padding: 20px 12px !important;
+  }
+  .auth-card {
+    padding: 24px 16px !important;
+    max-width: 100% !important;
+  }
+}
+</style>
+
 <div class="auth-page-wrapper">
   <div class="auth-card auth-card-dark" style="max-width: 500px;">
     
