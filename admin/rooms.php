@@ -100,13 +100,6 @@ $show_form = ($edit_room !== null || isset($_GET['add']));
 <link rel="stylesheet" href="../assets/css/style.css">
 <style>
 body{margin:0;}
-.admin-layout{display:grid;grid-template-columns:240px 1fr;min-height:100vh;}
-.admin-sidebar{background:var(--color-primary-dark);color:#FFF;padding:24px 16px;border-right:1px solid var(--color-border-gold);}
-.admin-nav{list-style:none;padding:0;margin:0;}
-.admin-nav li{margin-bottom:4px;}
-.admin-nav a{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:var(--radius-sm);color:#94A3B8;font-weight:500;font-size:0.87rem;text-decoration:none;transition:all 0.2s;}
-.admin-nav a.active,.admin-nav a:hover{background:rgba(197,155,39,0.15);color:var(--color-gold-light);}
-.admin-main{padding:28px 36px;background:#F8FAFC;}
 .card{background:#FFF;border:1px solid #E2E8F0;border-radius:var(--radius-md);box-shadow:var(--shadow-sm);}
 .fg2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
 .fg3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;}
@@ -119,25 +112,15 @@ body{margin:0;}
 .st-a{background:#DEF7EC;color:#03543F;} .st-b{background:#FEF3C7;color:#92400E;} .st-m{background:#FEE2E2;color:#991B1B;}
 .stb{font-size:0.7rem;font-weight:700;padding:3px 9px;border-radius:20px;}
 #imgPrev{width:100%;max-height:130px;object-fit:cover;border-radius:6px;border:1px solid #E2E8F0;display:none;margin-top:8px;}
-@media(max-width:800px){.admin-layout{grid-template-columns:1fr}.admin-sidebar{display:none}.admin-main{padding:14px}.fg2,.fg3,.fg4{grid-template-columns:1fr}}
+@media(max-width:768px){.fg2,.fg3,.fg4{grid-template-columns:1fr !important;gap:12px;}.card{padding:18px 14px !important;}}
 </style>
 </head>
 <body>
 <div class="admin-layout">
-<aside class="admin-sidebar">
-  <div class="brand-logo" style="margin-bottom:30px;">
-    <img src="../assets/images/logo.png" alt="Logo" style="width:36px;height:36px;border-radius:50%;border:2px solid var(--color-gold);object-fit:cover;">
-    <div><span class="brand-name" style="font-size:0.95rem;letter-spacing:2px;">HOTEL</span><span class="brand-sub" style="font-size:0.48rem;letter-spacing:2px;display:block;">Admin</span></div>
-  </div>
-  <ul class="admin-nav">
-    <li><a href="dashboard.php"><i class="fa-solid fa-chart-pie"></i> Dashboard</a></li>
-    <li><a href="bookings.php"><i class="fa-solid fa-receipt"></i> All Bookings</a></li>
-    <li><a href="rooms.php" class="active"><i class="fa-solid fa-bed"></i> Manage Rooms</a></li>
-    <li><a href="profile.php"><i class="fa-solid fa-user-shield"></i> My Profile</a></li>
-    <li><a href="../index.php" target="_blank"><i class="fa-solid fa-globe"></i> View Website</a></li>
-    <li style="margin-top:28px;"><a href="logout.php" style="color:#EF4444;"><i class="fa-solid fa-power-off"></i> Logout</a></li>
-  </ul>
-</aside>
+<?php
+  $admin_active_page = 'rooms';
+  require_once 'nav.php';
+?>
 
 <main class="admin-main">
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:10px;">
@@ -252,8 +235,11 @@ body{margin:0;}
         <a href="rooms.php?add=1" class="btn btn-gold btn-sm"><i class="fa-solid fa-plus"></i> Add First Room</a>
       </div>
     <?php else: ?>
-      <div style="overflow-x:auto;">
-        <table style="width:100%;border-collapse:collapse;font-size:0.85rem;">
+      <div class="table-swipe-hint">
+        <i class="fa-solid fa-arrows-left-right"></i> Swipe table to view full room details & edit/delete actions
+      </div>
+      <div class="admin-table-responsive">
+        <table style="width:100%;min-width:620px;border-collapse:collapse;font-size:0.85rem;">
           <thead>
             <tr style="background:#F8FAFC;border-bottom:2px solid #E2E8F0;color:var(--color-text-muted);">
               <th style="padding:11px 14px;text-align:left;font-weight:600;">Photo</th>

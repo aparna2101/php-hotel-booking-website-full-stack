@@ -125,7 +125,7 @@ $active_revenue    = (float)$pdo->query("SELECT COALESCE(SUM(total_amount), 0) F
       background: #FFFFFF;
       border: 1px solid #E2E8F0;
       border-radius: var(--radius-md);
-      padding: 18px 22px;
+      padding: 16px 18px;
       box-shadow: 0 1px 3px rgba(0,0,0,0.05);
       display: flex;
       align-items: center;
@@ -133,6 +133,7 @@ $active_revenue    = (float)$pdo->query("SELECT COALESCE(SUM(total_amount), 0) F
     }
     .admin-table {
       width: 100%;
+      min-width: 820px;
       border-collapse: collapse;
       text-align: left;
       font-size: 0.86rem;
@@ -184,59 +185,15 @@ $active_revenue    = (float)$pdo->query("SELECT COALESCE(SUM(total_amount), 0) F
       gap: 5px;
       justify-content: flex-end;
     }
-    @media (max-width: 900px) {
-      .admin-layout { grid-template-columns: 1fr; }
-      .admin-sidebar { display: none; }
-      .admin-main { padding: 20px 14px; }
-    }
   </style>
 </head>
 <body>
 
   <div class="admin-layout">
-    <!-- Sidebar -->
-    <aside class="admin-sidebar">
-      <div class="brand-logo" style="margin-bottom: 40px; display: flex; align-items: center; gap: 12px;">
-        <img src="../assets/images/logo.png" alt="Logo" style="width: 42px; height: 42px; border-radius: 50%; border: 2px solid var(--color-gold); object-fit: cover;">
-        <div>
-          <span class="brand-name" style="font-size: 1.15rem; letter-spacing: 2px; color: #FFF; font-family: var(--font-serif);">HOTEL</span>
-          <span class="brand-tagline" style="display: block; font-size: 0.65rem; color: var(--color-gold); letter-spacing: 2px;">ADMIN SUITE</span>
-        </div>
-      </div>
-
-      <ul class="admin-nav">
-        <li>
-          <a href="dashboard.php">
-            <i class="fa-solid fa-chart-line"></i> Dashboard Overview
-          </a>
-        </li>
-        <li>
-          <a href="bookings.php" class="active">
-            <i class="fa-solid fa-calendar-check text-gold"></i> All Bookings & Check-ins
-          </a>
-        </li>
-        <li>
-          <a href="rooms.php">
-            <i class="fa-solid fa-bed"></i> Room Inventory
-          </a>
-        </li>
-        <li>
-          <a href="profile.php">
-            <i class="fa-solid fa-user-shield"></i> Admin Security
-          </a>
-        </li>
-        <li style="margin-top: 30px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px;">
-          <a href="../index.php" target="_blank" style="color: #38BDF8;">
-            <i class="fa-solid fa-arrow-up-right-from-square"></i> View Guest Website
-          </a>
-        </li>
-        <li>
-          <a href="logout.php" style="color: #F87171;">
-            <i class="fa-solid fa-right-from-bracket"></i> Sign Out
-          </a>
-        </li>
-      </ul>
-    </aside>
+    <?php
+      $admin_active_page = 'bookings';
+      require_once 'nav.php';
+    ?>
 
     <!-- Main Content -->
     <main class="admin-main">
@@ -266,7 +223,7 @@ $active_revenue    = (float)$pdo->query("SELECT COALESCE(SUM(total_amount), 0) F
       <?php endif; ?>
 
       <!-- 5 Summary Metric Cards -->
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-bottom: 24px;">
+      <div class="admin-stats-grid">
         <div class="stat-pill">
           <div>
             <span style="font-size: 0.75rem; color: var(--color-text-muted); text-transform: uppercase; font-weight: 600;">Total Bookings</span>
@@ -368,7 +325,11 @@ $active_revenue    = (float)$pdo->query("SELECT COALESCE(SUM(total_amount), 0) F
           </span>
         </div>
 
-        <div style="overflow-x: auto;">
+        <div class="table-swipe-hint">
+          <i class="fa-solid fa-arrows-left-right"></i> Swipe table horizontally to view full guest ID, room info & front desk actions
+        </div>
+
+        <div class="admin-table-responsive">
           <table class="admin-table">
             <thead>
               <tr>

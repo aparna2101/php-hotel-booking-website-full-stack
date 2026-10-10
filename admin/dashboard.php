@@ -104,10 +104,16 @@ $recent_bookings = $stmt->fetchAll();
       border-radius: var(--radius-md);
       padding: 24px;
       box-shadow: var(--shadow-sm);
-      overflow-x: auto;
+      overflow: hidden;
+    }
+    @media (max-width: 768px) {
+      .table-container {
+        padding: 16px 12px;
+      }
     }
     .admin-table {
       width: 100%;
+      min-width: 650px;
       border-collapse: collapse;
       text-align: left;
       font-size: 0.88rem;
@@ -117,59 +123,34 @@ $recent_bookings = $stmt->fetchAll();
       border-bottom: 2px solid #E2E8F0;
       color: var(--color-text-muted);
       font-weight: 600;
+      background: #F8FAFC;
     }
     .admin-table td {
       padding: 14px;
       border-bottom: 1px solid #EDF2F7;
       vertical-align: middle;
     }
-    @media (max-width: 900px) {
-      .admin-layout {
-        grid-template-columns: 1fr;
-      }
-      .admin-sidebar {
-        display: none;
-      }
-      .admin-main {
-        padding: 20px 16px;
-      }
-    }
   </style>
 </head>
 <body>
 
   <div class="admin-layout">
-    <!-- Sidebar -->
-    <aside class="admin-sidebar">
-      <div class="brand-logo" style="margin-bottom: 40px;">
-        <img src="../assets/images/logo.png" alt="Logo" style="width: 44px; height: 44px; border-radius: 50%; border: 2px solid var(--color-gold); object-fit: cover;">
-        <div>
-          <span class="brand-name" style="font-size: 1.15rem; letter-spacing: 2px;">HOTEL</span>
-          <span class="brand-sub" style="font-size: 0.55rem; letter-spacing: 2px;">Admin Management</span>
-        </div>
-      </div>
-
-      <ul class="admin-nav">
-        <li><a href="dashboard.php" class="active"><i class="fa-solid fa-chart-pie"></i> Dashboard</a></li>
-        <li><a href="bookings.php"><i class="fa-solid fa-receipt"></i> All Bookings</a></li>
-        <li><a href="rooms.php"><i class="fa-solid fa-bed"></i> Manage Rooms</a></li>
-        <li><a href="profile.php"><i class="fa-solid fa-user-shield"></i> My Profile</a></li>
-        <li><a href="../index.php" target="_blank"><i class="fa-solid fa-globe"></i> View Website</a></li>
-        <li style="margin-top: 30px;"><a href="logout.php" style="color: #EF4444;"><i class="fa-solid fa-power-off"></i> Logout</a></li>
-      </ul>
-    </aside>
+    <?php 
+      $admin_active_page = 'dashboard';
+      require_once 'nav.php'; 
+    ?>
 
     <!-- Main Content -->
     <main class="admin-main">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 28px; flex-wrap: wrap; gap: 14px;">
-        <div>
-          <h1 style="font-family: var(--font-serif); font-size: 1.8rem; color: var(--color-primary); margin-bottom: 4px;">Management Overview</h1>
-          <p style="color: var(--color-text-muted); font-size: 0.88rem;">
+      <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px; flex-wrap: wrap; gap: 12px;">
+        <div style="min-width: 200px;">
+          <h1 style="font-family: var(--font-serif); font-size: 1.6rem; color: var(--color-primary); margin-bottom: 3px; word-break: break-word;">Management Overview</h1>
+          <p style="color: var(--color-text-muted); font-size: 0.82rem; margin: 0; word-break: break-all;">
             Logged in as <strong><?php echo htmlspecialchars($_SESSION['admin_name'] ?? 'Admin'); ?></strong> (<?php echo htmlspecialchars($_SESSION['admin_email'] ?? 'admin@hotel.com'); ?>)
           </p>
         </div>
-        <div style="display: flex; gap: 10px;">
-          <a href="../index.php" target="_blank" class="btn btn-outline-dark btn-sm">
+        <div>
+          <a href="../index.php" target="_blank" class="btn btn-outline-dark btn-sm" style="white-space: nowrap;">
             <i class="fa-solid fa-arrow-up-right-from-square"></i> Open Website
           </a>
         </div>
@@ -181,58 +162,63 @@ $recent_bookings = $stmt->fetchAll();
         </div>
       <?php endif; ?>
 
-      <!-- Stats Grid -->
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 32px;">
+      <!-- Stats Grid (Responsive 4-col desktop, 2-col mobile, 0 overflow) -->
+      <div class="admin-stats-grid">
         <a href="rooms.php" class="stat-card" style="text-decoration:none; display:block; cursor:pointer;">
-          <div style="color: var(--color-gold); font-size: 1.4rem; margin-bottom: 8px;"><i class="fa-solid fa-bed"></i></div>
-          <div style="font-size: 1.8rem; font-weight: 700; color: var(--color-primary);"><?php echo $total_rooms; ?></div>
-          <div style="color: var(--color-text-muted); font-size: 0.82rem;">Total Rooms &rarr; Manage</div>
+          <div style="color: var(--color-gold); font-size: 1.3rem; margin-bottom: 6px;"><i class="fa-solid fa-bed"></i></div>
+          <div class="stat-num" style="font-size: 1.7rem; font-weight: 700; color: var(--color-primary); line-height: 1.1;"><?php echo $total_rooms; ?></div>
+          <div class="stat-label" style="color: var(--color-text-muted); font-size: 0.8rem; margin-top: 4px;">Total Rooms &rarr;</div>
         </a>
 
         <div class="stat-card">
-          <div style="color: #25D366; font-size: 1.4rem; margin-bottom: 8px;"><i class="fa-solid fa-calendar-check"></i></div>
-          <div style="font-size: 1.8rem; font-weight: 700; color: var(--color-primary);"><?php echo $confirmed_bookings; ?></div>
-          <div style="color: var(--color-text-muted); font-size: 0.82rem;">Confirmed Bookings</div>
+          <div style="color: #25D366; font-size: 1.3rem; margin-bottom: 6px;"><i class="fa-solid fa-calendar-check"></i></div>
+          <div class="stat-num" style="font-size: 1.7rem; font-weight: 700; color: var(--color-primary); line-height: 1.1;"><?php echo $confirmed_bookings; ?></div>
+          <div class="stat-label" style="color: var(--color-text-muted); font-size: 0.8rem; margin-top: 4px;">Confirmed</div>
         </div>
 
         <div class="stat-card">
-          <div style="color: #F59E0B; font-size: 1.4rem; margin-bottom: 8px;"><i class="fa-solid fa-clock"></i></div>
-          <div style="font-size: 1.8rem; font-weight: 700; color: var(--color-primary);"><?php echo $pending_bookings; ?></div>
-          <div style="color: var(--color-text-muted); font-size: 0.82rem;">Pending Action</div>
+          <div style="color: #F59E0B; font-size: 1.3rem; margin-bottom: 6px;"><i class="fa-solid fa-clock"></i></div>
+          <div class="stat-num" style="font-size: 1.7rem; font-weight: 700; color: var(--color-primary); line-height: 1.1;"><?php echo $pending_bookings; ?></div>
+          <div class="stat-label" style="color: var(--color-text-muted); font-size: 0.8rem; margin-top: 4px;">Pending</div>
         </div>
 
         <div class="stat-card">
-          <div style="color: #0E7490; font-size: 1.4rem; margin-bottom: 8px;"><i class="fa-solid fa-indian-rupee-sign"></i></div>
-          <div style="font-size: 1.8rem; font-weight: 700; color: var(--color-primary);">₹<?php echo number_format($total_revenue); ?></div>
-          <div style="color: var(--color-text-muted); font-size: 0.82rem;">Confirmed Revenue</div>
+          <div style="color: #0E7490; font-size: 1.3rem; margin-bottom: 6px;"><i class="fa-solid fa-indian-rupee-sign"></i></div>
+          <div class="stat-num" style="font-size: 1.7rem; font-weight: 700; color: var(--color-primary); line-height: 1.1;">&#8377;<?php echo number_format($total_revenue); ?></div>
+          <div class="stat-label" style="color: var(--color-text-muted); font-size: 0.8rem; margin-top: 4px;">Revenue</div>
         </div>
       </div>
 
       <!-- Guest Reservations Table -->
       <div class="table-container">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; flex-wrap: wrap; gap: 10px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 10px;">
           <div>
-            <h3 style="font-family: var(--font-serif); font-size: 1.25rem; color: var(--color-primary); margin-bottom: 4px;">Recent Guest Reservations</h3>
-            <p style="color: var(--color-text-muted); font-size: 0.82rem; margin: 0;">Live reservations synced from the database</p>
+            <h3 style="font-family: var(--font-serif); font-size: 1.2rem; color: var(--color-primary); margin-bottom: 2px;">Recent Guest Reservations</h3>
+            <p style="color: var(--color-text-muted); font-size: 0.8rem; margin: 0;">Live reservations synced from the database</p>
           </div>
           <a href="bookings.php" class="btn btn-gold btn-sm">
             <i class="fa-solid fa-magnifying-glass"></i> All Bookings & Search
           </a>
         </div>
 
-        <table class="admin-table">
-          <thead>
-            <tr>
-              <th>Ref #</th>
-              <th>Guest Details</th>
-              <th>Room</th>
-              <th>Dates</th>
-              <th>Amount</th>
-              <th>Status</th>
-              <th style="text-align: right;">Action</th>
-            </tr>
-          </thead>
-          <tbody>
+        <div class="table-swipe-hint">
+          <i class="fa-solid fa-arrows-left-right"></i> Swipe table horizontally to view full booking details & actions
+        </div>
+
+        <div class="admin-table-responsive">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Ref #</th>
+                <th>Guest Details</th>
+                <th>Room</th>
+                <th>Dates</th>
+                <th>Amount</th>
+                <th>Status</th>
+                <th style="text-align: right;">Action</th>
+              </tr>
+            </thead>
+            <tbody>
             <?php if (empty($recent_bookings)): ?>
               <tr>
                 <td colspan="7" style="text-align:center; padding: 50px 20px; color: var(--color-text-muted);">
@@ -354,7 +340,8 @@ $recent_bookings = $stmt->fetchAll();
             <?php endif; ?>
           </tbody>
         </table>
-      </div>
+        </div> <!-- end admin-table-responsive -->
+      </div> <!-- end table-container -->
     </main>
   </div>
 

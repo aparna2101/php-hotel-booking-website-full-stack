@@ -83,37 +83,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <link rel="stylesheet" href="../assets/css/style.css">
 <style>
 body{margin:0;}
-.admin-layout{display:grid;grid-template-columns:240px 1fr;min-height:100vh;}
-.admin-sidebar{background:var(--color-primary-dark);color:#FFF;padding:24px 16px;border-right:1px solid var(--color-border-gold);}
-.admin-nav{list-style:none;padding:0;margin:0;}
-.admin-nav li{margin-bottom:4px;}
-.admin-nav a{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:var(--radius-sm);color:#94A3B8;font-weight:500;font-size:0.87rem;text-decoration:none;transition:all 0.2s;}
-.admin-nav a.active,.admin-nav a:hover{background:rgba(197,155,39,0.15);color:var(--color-gold-light);}
-.admin-main{padding:28px 36px;background:#F8FAFC;}
-.card{background:#FFF;border:1px solid #E2E8F0;border-radius:var(--radius-md);box-shadow:var(--shadow-sm);padding:26px 30px;margin-bottom:22px;}
+.card{background:#FFF;border:1px solid #E2E8F0;border-radius:var(--radius-md);box-shadow:var(--shadow-sm);padding:24px 26px;margin-bottom:20px;}
 .fl label{display:block;font-size:0.81rem;font-weight:600;color:var(--color-primary);margin-bottom:5px;}
 .fl input{width:100%;padding:9px 12px;border:1.5px solid #CBD5E1;border-radius:var(--radius-xs);font-size:0.87rem;font-family:inherit;color:var(--color-primary);transition:border-color 0.2s;box-sizing:border-box;}
 .fl input:focus{outline:none;border-color:var(--color-gold);}
 .fg2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}
-@media(max-width:800px){.admin-layout{grid-template-columns:1fr}.admin-sidebar{display:none}.admin-main{padding:14px}.fg2{grid-template-columns:1fr}}
+@media(max-width:768px){.fg2{grid-template-columns:1fr !important;gap:12px;}.card{padding:18px 14px !important;}}
 </style>
 </head>
 <body>
 <div class="admin-layout">
-<aside class="admin-sidebar">
-  <div class="brand-logo" style="margin-bottom:30px;">
-    <img src="../assets/images/logo.png" alt="Logo" style="width:36px;height:36px;border-radius:50%;border:2px solid var(--color-gold);object-fit:cover;">
-    <div><span class="brand-name" style="font-size:0.95rem;letter-spacing:2px;">HOTEL</span><span class="brand-sub" style="font-size:0.48rem;letter-spacing:2px;display:block;">Admin</span></div>
-  </div>
-  <ul class="admin-nav">
-    <li><a href="dashboard.php"><i class="fa-solid fa-chart-pie"></i> Dashboard</a></li>
-    <li><a href="bookings.php"><i class="fa-solid fa-receipt"></i> All Bookings</a></li>
-    <li><a href="rooms.php"><i class="fa-solid fa-bed"></i> Manage Rooms</a></li>
-    <li><a href="profile.php" class="active"><i class="fa-solid fa-user-shield"></i> My Profile</a></li>
-    <li><a href="../index.php" target="_blank"><i class="fa-solid fa-globe"></i> View Website</a></li>
-    <li style="margin-top:28px;"><a href="logout.php" style="color:#EF4444;"><i class="fa-solid fa-power-off"></i> Logout</a></li>
-  </ul>
-</aside>
+<?php
+  $admin_active_page = 'profile';
+  require_once 'nav.php';
+?>
 
 <main class="admin-main">
   <div style="margin-bottom:20px;">

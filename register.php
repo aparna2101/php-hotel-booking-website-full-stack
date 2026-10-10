@@ -107,7 +107,7 @@ include 'includes/header.php';
         <input type="text" name="name" placeholder="Your Full Name" required>
       </div>
 
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px;">
+      <div class="auth-grid-2col">
         <div class="form-group">
           <label><i class="fa-solid fa-envelope"></i> Email Address</label>
           <input type="email" name="email" placeholder="name@domain.com" required>
@@ -118,7 +118,7 @@ include 'includes/header.php';
         </div>
       </div>
 
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 18px;">
+      <div class="auth-grid-2col">
         <div class="form-group">
           <label><i class="fa-solid fa-lock"></i> Password</label>
           <div style="position: relative; display: flex; align-items: center;">

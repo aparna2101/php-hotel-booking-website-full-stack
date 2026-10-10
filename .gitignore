@@ -11,3 +11,5 @@ $RECYCLE.BIN/
 *.log
 .vscode/
 .idea/
+# Deployment archives
+project_deploy.zip
