@@ -2,7 +2,7 @@
 
 A full-stack, production-grade luxury Hotel & Resort management system built using **PHP & MySQL** with real-time room availability, OTP email verification, complete booking lifecycle management, printable tax invoices, and a dedicated admin portal.
 
----
+Live demo : https://hotelbookingphp.freedev.app/index.php
 
 ## ✨ Features
 
